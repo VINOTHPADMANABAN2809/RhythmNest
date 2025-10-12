@@ -7,7 +7,7 @@ Perfect for learning, prototyping, or embedding in personal projects.
 ---
 
 ## ✅ Features Implemented
-
+- ☀️ Dark Theme / 🌙 Light Theme
 - ▶️ Play / Pause / Next / Previous controls
 - 📊 Real-time **music visualizer** (frequency bars)
 - ⏱️ **Current time / total duration** display

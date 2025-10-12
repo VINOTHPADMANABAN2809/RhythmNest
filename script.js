@@ -20,6 +20,9 @@ const visualizer = document.getElementById('visualizer');
 const ctx = visualizer.getContext('2d');
 const volumeSlider = document.getElementById('volumeSlider');
 
+// ✅ ADD THIS LINE: Get theme toggle button
+const themeToggle = document.getElementById('themeToggle');
+
 // Initialize audio context and source ONCE
 initAudioContext();
 
@@ -82,8 +85,16 @@ audio.addEventListener('timeupdate', () => {
 audio.addEventListener('ended', () => {
     nextBtn.click();
 });
+
+// 🔊 Volume Control
 volumeSlider.addEventListener('input', () => {
     audio.volume = volumeSlider.value;
+});
+
+// ✅ ADD THIS: Dark Mode Toggle
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+    themeToggle.textContent = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
 });
 
 // 🔄 Load + Play

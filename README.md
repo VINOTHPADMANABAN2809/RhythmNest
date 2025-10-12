@@ -1,4 +1,4 @@
-# 5 Custom Web Music Player
+# RhythmNest - Custom Web Music Player
 
 A lightweight, responsive, and fully functional web-based music player built with **HTML, CSS, and JavaScript**. Features real-time audio visualizer, track navigation, volume control, and time display — all without external libraries or frameworks.
 

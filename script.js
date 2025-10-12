@@ -7,6 +7,7 @@ const playlist = [
 let currentTrackIndex = 0;
 let audioContext, analyser, dataArray, animationId;
 let source; // Created once and reused
+let isWaveformMode = false; 
 
 const audio = new Audio();
 const playBtn = document.getElementById('play');
@@ -19,6 +20,7 @@ const artistEl = document.getElementById('artist');
 const visualizer = document.getElementById('visualizer');
 const ctx = visualizer.getContext('2d');
 const volumeSlider = document.getElementById('volumeSlider');
+const toggleVizBtn = document.getElementById('toggleViz');
 
 // ✅ ADD THIS LINE: Get theme toggle button
 const themeToggle = document.getElementById('themeToggle');
@@ -86,6 +88,12 @@ audio.addEventListener('ended', () => {
     nextBtn.click();
 });
 
+// ✅ Toggle Visualizer Mode
+toggleVizBtn.addEventListener('click', () => {
+    isWaveformMode = !isWaveformMode;
+    toggleVizBtn.textContent = isWaveformMode ? '📉 Wave → Bars' : '📈 Bars → Wave';
+});
+
 // 🔊 Volume Control
 volumeSlider.addEventListener('input', () => {
     audio.volume = volumeSlider.value;
@@ -142,23 +150,52 @@ function initAudioContext() {
     analyser.connect(audioContext.destination);
 }
 
-// 🎨 ANIMATE VISUALIZER
+// 🎨 ANIMATE VISUALIZER — SUPPORTS BOTH BARS & WAVEFORM
 function animateVisualizer() {
     if (audio.paused) return;
 
     animationId = requestAnimationFrame(animateVisualizer);
 
-    analyser.getByteFrequencyData(dataArray);
-
     ctx.clearRect(0, 0, visualizer.width, visualizer.height);
 
-    const barWidth = visualizer.width / dataArray.length * 2;
-    let x = 0;
+    if (isWaveformMode) {
+        // 📈 WAVEFORM MODE
+        analyser.getByteTimeDomainData(dataArray);
 
-    for (let i = 0; i < dataArray.length; i++) {
-        const barHeight = dataArray[i] / 255 * visualizer.height;
-        ctx.fillStyle = `hsl(${i / dataArray.length * 360}, 100%, 50%)`;
-        ctx.fillRect(x, visualizer.height - barHeight, barWidth, barHeight);
-        x += barWidth + 1;
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#1db954';
+        ctx.beginPath();
+
+        const sliceWidth = visualizer.width / analyser.fftSize;
+        let x = 0;
+
+        for (let i = 0; i < analyser.fftSize; i++) {
+            const v = dataArray[i] / 128.0;
+            const y = v * visualizer.height / 2;
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+
+            x += sliceWidth;
+        }
+
+        ctx.lineTo(visualizer.width, visualizer.height / 2);
+        ctx.stroke();
+    } else {
+        // 📊 BARS MODE (default)
+        analyser.getByteFrequencyData(dataArray);
+
+        const barWidth = visualizer.width / dataArray.length * 2;
+        let x = 0;
+
+        for (let i = 0; i < dataArray.length; i++) {
+            const barHeight = dataArray[i] / 255 * visualizer.height;
+            ctx.fillStyle = `hsl(${i / dataArray.length * 360}, 100%, 50%)`;
+            ctx.fillRect(x, visualizer.height - barHeight, barWidth, barHeight);
+            x += barWidth + 1;
+        }
     }
 }

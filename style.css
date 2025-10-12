@@ -76,7 +76,7 @@ button {
     width: 120px;
 }
 
-/* ✅ Dark Mode Toggle Button */
+/* Dark Mode Toggle Button */
 .theme-toggle {
     position: absolute;
     top: 15px;
@@ -89,7 +89,6 @@ button {
     z-index: 10;
 }
 
-/* ✅ Dark Theme Styles */
 body.dark-theme {
     background: #121212;
 }
@@ -120,4 +119,29 @@ body.dark-theme button {
 
 body.dark-theme #visualizer {
     background: #2a2a2a;
+}
+
+/* ✅ Visualizer Toggle Button */
+.toggle-viz-btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: #6f42c1;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+}
+
+.toggle-viz-btn:hover {
+    background: #5a32a3;
+}
+
+body.dark-theme .toggle-viz-btn {
+    background: #9b59b6;
+}
+
+body.dark-theme .toggle-viz-btn:hover {
+    background: #8e44ad;
 }

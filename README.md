@@ -9,27 +9,12 @@ Perfect for learning, prototyping, or embedding in personal projects.
 ## ✅ Features Implemented
 - ☀️ Dark Theme / 🌙 Light Theme
 - ▶️ Play / Pause / Next / Previous controls
-- 📊 Real-time **music visualizer** (frequency bars)
-- ⏱️ **Current time / total duration** display
+- 📊 Real-time **music visualizer** (frequency bars & Wave)
 - 🔊 **Volume slider** with persistence across tracks
 - 🔄 Seamless track switching (forward & backward)
 - 💾 Works with **local MP3 files** (no server dependencies after setup)
 - 🖥️ Responsive design — works on desktop & mobile browsers
 - 🧠 Optimized audio context handling (no memory leaks or connection errors)
-
----
-
-## 📁 Project Structure
-
-RhythmNest/
- ├── index.html # Main HTML structure
- ├── style.css # Styling and layout
- ├── script.js # Core logic + Web Audio API
- ├── song1.mp3 # Sample track 1 (replace with your own)
- ├── song2.mp3 # Sample track 2
- └── song3.mp3 # Sample track 3
-
- > 💡 Replace `song1.mp3`, `song2.mp3`, `song3.mp3` with your own local audio files.
 
 ---
 
@@ -56,7 +41,6 @@ RhythmNest/
 
 ## 🎯 Future Enhancements (Planned)
 
-- 🌙 Dark/Light mode toggle
 - 💾 Download current track button
 - 📜 Playlist dropdown UI
 - 📈 Toggle between bar/waveform visualizer

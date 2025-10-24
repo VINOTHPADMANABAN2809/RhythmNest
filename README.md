@@ -1,50 +1,86 @@
-RhythmNest - Custom Web Music Player
-A lightweight, responsive, and fully functional web-based music player built with HTML, CSS, and JavaScript. Features real-time audio visualizer, track navigation, volume control, time display, and robust error handling — all without external libraries or frameworks.
+🎵 RhythmNest — Custom Web Music Player
 
-Perfect for learning, prototyping, or embedding in personal projects.
+A lightweight, responsive web music player built with HTML, CSS, and JavaScript.
+Features a real-time audio visualizer, track controls, volume persistence, and error handling — all without any frameworks or libraries.
 
-✅ Features Implemented
-☀️ Dark Theme / 🌙 Light Theme
-▶️ Play / Pause / Next / Previous controls
-⏱️ Time Display (Current playback time and total duration)
-📊 Real-time audio visualizer (frequency bars & Wave) with toggle switch.
-⚠️ Robust Error Handling for file loading and browser auto-play restrictions.
-🔊 Volume slider with persistence across tracks
-🔄 Seamless track switching (forward & backward)
-💾 Works with local MP3 files (no server dependencies after setup)
-🖥️ Responsive design — works on desktop & mobile browsers
-🧠 Optimized audio context handling (no memory leaks or connection errors)
-▶️ How to Run
-Download or clone this project.
+🌟 Features
 
-Place your MP3 files in the root folder (or update paths in script.js).
+☀️ / 🌙 Dark–Light Theme Toggle
 
-Open index.html using a local server:
+▶️ Play / Pause / Next / Previous
 
-✅ Recommended: Use VS Code Live Server
-❌ Avoid: Double-clicking index.html (may block audio due to browser security)
-Click anywhere → then click ▶️ Play!
+⏱️ Playback Time Display
+
+📊 Audio Visualizer (frequency bars & wave)
+
+🔊 Volume Control (saved across tracks)
+
+🔄 Seamless Track Switching
+
+⚠️ Error Handling for file load & autoplay
+
+💾 Offline Ready — works with local MP3 files
+
+🖥️ Responsive Design
+
+🧠 Optimized Audio Context Management
+
+🚀 How to Run
+
+Clone this repo
+
+git clone https://github.com/your-username/RhythmNest.git
+
+
+Add your MP3 files to the root folder
+(or update paths in script.js)
+
+Open via a local server
+
+✅ Recommended: VS Code Live Server
+
+❌ Avoid: Double-clicking index.html (autoplay may be blocked)
+
+Click anywhere → then click ▶️ Play
 
 🛠️ Built With
-HTML5 — Structure & semantic elements
-CSS3 — Styling, responsiveness, animations
-JavaScript (ES6) — DOM manipulation, event handling
-Web Audio API — Real-time audio analysis and visualization
-🎯 Future Enhancements (Planned)
-📜 Playlist dropdown UI (Clickable list of tracks)
-📏 Canvas Resolution Fix for high-DPI displays (improving visualizer clarity).
-💾 Download current track button
+
+HTML5 — structure & layout
+
+CSS3 — styling & responsiveness
+
+JavaScript (ES6) — interactivity
+
+Web Audio API — visualization & analysis
+
+🎯 Planned Enhancements
+
+📜 Playlist dropdown UI
+
+📏 Canvas clarity on high-DPI screens
+
+💾 Download current track
+
 ⏸️ Sleep timer / auto-stop
+
 🎚️ Equalizer presets
-🔄 Drag & drop to add songs
+
+🔄 Drag & drop song addition
+
 🧑‍💻 Contributing
-Want to improve this player? Feel free to:
+
+Contributions welcome!
 
 Fork the repo
-Submit PRs for new features or fixes
-Report issues or suggest enhancements
-All contributions welcome!
+
+Create a branch
+
+Commit changes
+
+Submit a PR
+
+You can also report issues or suggest features.
 
 📄 License
-MIT License — Free to use, modify, and distribute.
 
+Licensed under the MIT License — free to use, modify, and distribute.

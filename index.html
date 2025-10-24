@@ -11,7 +11,7 @@
 
     <div class="player">
 
-        <!-- ✅ Dark Mode Toggle Button -->
+        
         <button id="themeToggle" class="theme-toggle">🌙</button>
 
         <div class="info">
@@ -20,6 +20,11 @@
         </div>
 
         <canvas id="visualizer"></canvas>
+        
+        <!-- NEW: Time Display Element -->
+        <div class="time-display">
+            <span id="currentTime">0:00</span>  <span id="duration">0:00</span>
+        </div>
 
         <div class="progress" id="progressBar">
             <div id="progress"></div>
@@ -31,10 +36,10 @@
             <button id="next">⏭️</button>
         </div>
         
-        <!-- ✅ Visualizer Toggle -->
+        
         <button id="toggleViz" class="toggle-viz-btn">📈 Bars → Wave</button>
         
-        <!-- Volume Control -->
+        
         <div class="volume">
             <span>🔊</span>
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">

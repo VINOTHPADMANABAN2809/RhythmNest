@@ -1,12 +1,12 @@
 const playlist = [
-    { title: "Song 1", artist: "Artist A", src: "Songs/s1.mp3" },
-    { title: "Song 2", artist: "Artist B", src: "Songs/s2.mp3" },
-    { title: "Song 3", artist: "Artist C", src: "Songs/s3.mp3" }
+    { title: "Song 1", artist: "Artist A", src: "songs/s1.mp3" },
+    { title: "Song 2", artist: "Artist B", src: "songs/s2.mp3" },
+    { title: "Song 3", artist: "Artist C", src: "songs/s3.mp3" }
 ];
 
 let currentTrackIndex = 0;
 let audioContext, analyser, dataArray, animationId;
-let source; // Created once and reused
+let source; 
 let isWaveformMode = false; 
 
 const audio = new Audio();
@@ -22,25 +22,82 @@ const ctx = visualizer.getContext('2d');
 const volumeSlider = document.getElementById('volumeSlider');
 const toggleVizBtn = document.getElementById('toggleViz');
 
-// ✅ ADD THIS LINE: Get theme toggle button
+const currentTimeEl = document.getElementById('currentTime');
+const durationEl = document.getElementById('duration');
+
+
 const themeToggle = document.getElementById('themeToggle');
 
-// Initialize audio context and source ONCE
-initAudioContext();
 
-// Load first track
+initAudioContext();
 loadTrack(currentTrackIndex);
 
-// ▶️ Play/Pause
+
+// ⌚ UTILITY: Format seconds into MM:SS
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    const formattedSeconds = remainingSeconds < 10 ? '0' + remainingSeconds : remainingSeconds;
+    return `${minutes}:${formattedSeconds}`;
+}
+
+// ⚠️ NEW: ERROR HANDLING FUNCTION
+function handleAudioError(e) {
+    console.error("Audio error occurred:", e.target.error.code, e.target.error.message);
+    
+    let errorMsg = "An unknown playback error occurred.";
+    switch (e.target.error.code) {
+        case 1:
+            errorMsg = "Media loading aborted by user.";
+            break;
+        case 2:
+            errorMsg = "Network error: file download failed.";
+            break;
+        case 3:
+            errorMsg = "Decoding error: file is corrupted or unsupported.";
+            break;
+        case 4:
+            errorMsg = "Source error: audio file not found (404). Check path: " + audio.src;
+            break;
+    }
+
+    // Stop playback and update UI
+    if (animationId) cancelAnimationFrame(animationId);
+    audio.pause();
+    playBtn.textContent = "▶️";
+    
+    titleEl.textContent = "Error Loading Track";
+    artistEl.textContent = errorMsg;
+    
+    alert(`Playback Error: ${errorMsg}`);
+}
+
+// 🌐 ADD GLOBAL ERROR LISTENER
+audio.addEventListener('error', handleAudioError);
+
+
 playBtn.addEventListener('click', () => {
+    // Resume context on first user gesture if suspended
+    if (audioContext.state === 'suspended') {
+        audioContext.resume().catch(err => {
+            console.error("Failed to resume AudioContext:", err);
+        });
+    }
+
     if (audio.paused) {
         const playAttempt = () => {
             audio.play().then(() => {
                 playBtn.textContent = "⏸️";
                 animateVisualizer();
             }).catch(err => {
-                console.error("Playback failed:", err);
-                alert("Click ▶️ again.");
+                // Handle the common Auto-play Restriction Error
+                console.error("Playback failed (likely auto-play blocked):", err);
+                // Only alert if the error is due to user interaction needed
+                if (err.name === 'NotAllowedError' || err.name === 'AbortError') {
+                    alert("Playback requires a manual user click or permission.");
+                } else {
+                    alert("Playback failed. See console for details.");
+                }
             });
         };
 
@@ -56,70 +113,90 @@ playBtn.addEventListener('click', () => {
     }
 });
 
-// ⏮️ Previous
+
 prevBtn.addEventListener('click', () => {
     currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
     loadAndPlayTrack();
 });
 
-// ⏭️ Next
+
 nextBtn.addEventListener('click', () => {
     currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
     loadAndPlayTrack();
 });
 
-// 🎚️ Seek
+
 progressBar.addEventListener('click', (e) => {
     const rect = progressBar.getBoundingClientRect();
     const percent = (e.clientX - rect.left) / rect.width;
     audio.currentTime = percent * audio.duration;
 });
 
-// 🕐 Update progress bar
+
+// Handle progress bar and time display simultaneously
 audio.addEventListener('timeupdate', () => {
     if (audio.duration) {
         const percent = (audio.currentTime / audio.duration) * 100;
         progress.style.width = `${percent}%`;
+        
+        currentTimeEl.textContent = formatTime(audio.currentTime);
     }
 });
 
-// ▶️ Auto-next
+
+// Set total duration when metadata is loaded
+audio.addEventListener('loadedmetadata', () => {
+    if (audio.duration && !isNaN(audio.duration) && audio.duration !== Infinity) {
+        durationEl.textContent = formatTime(audio.duration);
+    } else {
+        durationEl.textContent = '0:00';
+    }
+});
+
+
 audio.addEventListener('ended', () => {
     nextBtn.click();
 });
 
-// ✅ Toggle Visualizer Mode
+
 toggleVizBtn.addEventListener('click', () => {
     isWaveformMode = !isWaveformMode;
     toggleVizBtn.textContent = isWaveformMode ? '📉 Wave → Bars' : '📈 Bars → Wave';
 });
 
-// 🔊 Volume Control
+
 volumeSlider.addEventListener('input', () => {
     audio.volume = volumeSlider.value;
 });
 
-// ✅ ADD THIS: Dark Mode Toggle
+
 themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-theme');
     themeToggle.textContent = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
 });
 
-// 🔄 Load + Play
+
 function loadAndPlayTrack() {
     loadTrack(currentTrackIndex);
 
     audio.addEventListener('canplay', () => {
+        // Attempt to resume context before playing if necessary
+        if (audioContext.state === 'suspended') {
+             audioContext.resume();
+        }
+
         audio.play().then(() => {
             playBtn.textContent = "⏸️";
             animateVisualizer();
         }).catch(err => {
-            console.error("Auto-play failed:", err);
+            console.error("Auto-play failed during track change:", err);
+            // If autoplay fails, at least update the UI to 'Play'
+            playBtn.textContent = "▶️"; 
         });
     }, { once: true });
 }
 
-// 🎵 LOAD TRACK — ✅ FIXED: Just change src, reuse existing source
+// 🎵 LOAD TRACK 
 function loadTrack(index) {
     const track = playlist[index];
     titleEl.textContent = track.title;
@@ -129,14 +206,18 @@ function loadTrack(index) {
     if (animationId) cancelAnimationFrame(animationId);
     ctx.clearRect(0, 0, visualizer.width, visualizer.height);
     progress.style.width = "0%";
+    
+    currentTimeEl.textContent = "0:00";
+    durationEl.textContent = "0:00";
+    playBtn.textContent = "▶️"; // Ensure button is reset to play state
 
-    // ✅ JUST CHANGE SRC — DO NOT RECREATE SOURCE NODE
+    // JUST CHANGE SRC
     audio.src = track.src;
     audio.load();
     volumeSlider.value = audio.volume;
 }
 
-// 🎚️ INIT AUDIO CONTEXT — ✅ RUNS ONCE, CREATES SOURCE NODE ONCE
+// 🎚️ INIT AUDIO CONTEXT 
 function initAudioContext() {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioContext.createAnalyser();
@@ -144,18 +225,19 @@ function initAudioContext() {
     const bufferLength = analyser.frequencyBinCount;
     dataArray = new Uint8Array(bufferLength);
 
-    // ✅ CREATE SOURCE NODE ONCE — IT WILL AUTOMATICALLY FOLLOW audio.src CHANGES
+    // CREATE SOURCE NODE ONCE 
     source = audioContext.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioContext.destination);
 }
 
-// 🎨 ANIMATE VISUALIZER — SUPPORTS BOTH BARS & WAVEFORM
+// 🎨 ANIMATE VISUALIZER 
 function animateVisualizer() {
     if (audio.paused) return;
 
     animationId = requestAnimationFrame(animateVisualizer);
 
+    // Note: Canvas size should ideally be set here based on clientWidth/clientHeight for optimal resolution (Next Step #3)
     ctx.clearRect(0, 0, visualizer.width, visualizer.height);
 
     if (isWaveformMode) {
@@ -163,10 +245,12 @@ function animateVisualizer() {
         analyser.getByteTimeDomainData(dataArray);
 
         ctx.lineWidth = 2;
-        ctx.strokeStyle = '#1db954';
+        // Use the primary color for waveform visualization
+        ctx.strokeStyle = document.body.classList.contains('dark-theme') ? '#9b59b6' : '#007bff'; 
         ctx.beginPath();
 
-        const sliceWidth = visualizer.width / analyser.fftSize;
+        // Use bufferLength for waveform (analyser.fftSize)
+        const sliceWidth = visualizer.width / analyser.fftSize; 
         let x = 0;
 
         for (let i = 0; i < analyser.fftSize; i++) {

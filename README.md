@@ -29,7 +29,7 @@ Features a real-time audio visualizer, track controls, volume persistence, and e
 
 Clone this repo
 
-git clone https://github.com/your-username/RhythmNest.git
+git clone https://github.com/VINOTHPADMANABAN2809/RhythmNest.git
 
 
 Add your MP3 files to the root folder
